@@ -1,6 +1,7 @@
 package com.framgia.laredolemurs;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
@@ -16,6 +17,7 @@ import com.facebook.AccessToken;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.HttpMethod;
+import com.framgia.laredolemurs.screen.album.VideoPlayerActivity;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -23,6 +25,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -54,7 +57,7 @@ public class VideoFragment extends Fragment implements OnVideoClickListener {
 
     private void retrieveVideos() {
         Bundle parameters = new Bundle();
-        parameters.putString("fields", "source,description,picture,length");
+        parameters.putString("fields", "source,description,length,picture,title");
         new GraphRequest(
                 AccessToken.getCurrentAccessToken(),
                 "/LaredoLemurs/videos",
@@ -62,7 +65,7 @@ public class VideoFragment extends Fragment implements OnVideoClickListener {
                 HttpMethod.GET,
                 new GraphRequest.Callback() {
                     public void onCompleted(GraphResponse response) {
-                        Log.i("dbdfb", "onCompleted: " + response.getRawResponse());
+                        Log.i("csdvsdv", "onCompleted: " + response.getRawResponse());
                         parseResult(response);
                     }
                 }
@@ -70,22 +73,26 @@ public class VideoFragment extends Fragment implements OnVideoClickListener {
     }
 
     private void parseResult(GraphResponse response) {
-        JSONObject object = response.getJSONObject();
-        try {
-            JSONArray array = object.getJSONArray("data");
-            for (int i = 0; i < array.length(); i++) {
-                JSONObject jsonObject = array.getJSONObject(i);
-                Video video = new Video();
-                video.setId(jsonObject.getString("id"));
-                video.setSource(jsonObject.getString("source"));
-                video.setPicture(jsonObject.getString("picture"));
-                video.setDuration(formatDuration(jsonObject.getDouble("length")));
-                if (jsonObject.has("description"))
-                    video.setDescription(jsonObject.getString("description"));
-                mVideos.add(video);
+        if (response != null) {
+            JSONObject object = response.getJSONObject();
+            try {
+                JSONArray array = object.getJSONArray("data");
+                for (int i = 0; i < array.length(); i++) {
+                    JSONObject jsonObject = array.getJSONObject(i);
+                    Video video = new Video();
+                    video.setId(jsonObject.getString("id"));
+                    video.setSource(jsonObject.getString("source"));
+                    video.setPicture(jsonObject.getString("picture"));
+                    video.setDuration(formatDuration(jsonObject.getDouble("length")));
+                    if (jsonObject.has("title"))
+                        video.setTitle(jsonObject.getString("title"));
+                    if (jsonObject.has("description"))
+                        video.setDescription(jsonObject.getString("description"));
+                    mVideos.add(video);
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
-        } catch (JSONException e) {
-            e.printStackTrace();
         }
         showVideos();
     }
@@ -93,7 +100,7 @@ public class VideoFragment extends Fragment implements OnVideoClickListener {
     private String formatDuration(double duration) {
         int minutes = (int) (duration % 3600) / 60;
         int seconds = (int) duration % 60;
-        return String.format("%02d:%02d", minutes, seconds);
+        return String.format(Locale.getDefault(), "%02d:%02d", minutes, seconds);
     }
 
 
@@ -108,6 +115,8 @@ public class VideoFragment extends Fragment implements OnVideoClickListener {
 
     @Override
     public void onVideoClicked(int position) {
-
+        Intent intent = new Intent(getActivity(), VideoPlayerActivity.class);
+        intent.putExtra("url", mVideos.get(position).getSource());
+        startActivity(intent);
     }
 }

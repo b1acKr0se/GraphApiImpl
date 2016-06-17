@@ -30,9 +30,6 @@ import butterknife.ButterKnife;
  * A simple {@link Fragment} subclass.
  */
 public class HomeFragment extends Fragment{
-    @Bind(R.id.login_button)LoginButton mLoginButton;
-    private CallbackManager mCallbackManager;
-    public static final String TAG = "HomeFragment";
 
     public HomeFragment() {
         // Required empty public constructor
@@ -45,40 +42,12 @@ public class HomeFragment extends Fragment{
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        FacebookSdk.sdkInitialize(getActivity());
-        mCallbackManager = CallbackManager.Factory.create();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
-        ButterKnife.bind(this, view);
-        mLoginButton.setReadPermissions("email");
-        mLoginButton.setFragment(this);
-        mLoginButton.registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
-            @Override
-            public void onSuccess(LoginResult loginResult) {
-                Toast.makeText(getActivity(), "Login Successful", Toast.LENGTH_SHORT).show();
-
-            }
-
-            @Override
-            public void onCancel() {
-                Toast.makeText(getActivity(), "cancel", Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onError(FacebookException exception) {
-                Toast.makeText(getActivity(), exception.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
         return view;
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        mCallbackManager.onActivityResult(requestCode, resultCode, data);
     }
 }

@@ -27,12 +27,9 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 
 public class PhotoActivity extends AppCompatActivity implements OnPhotoClickListener {
-    @Bind(R.id.recycler_view)
-    RecyclerView mRecyclerView;
-    @Bind(R.id.progress_bar)
-    ProgressBar mProgressBar;
-    @Bind(R.id.toolbar)
-    Toolbar mToolbar;
+    @Bind(R.id.recycler_view) GridRecyclerView mRecyclerView;
+    @Bind(R.id.progress_bar) ProgressBar mProgressBar;
+    @Bind(R.id.toolbar) Toolbar mToolbar;
     private List<Photo> mPhotoList = new ArrayList<>();
     private static final String TAG = "PhotoActivity";
 
@@ -41,12 +38,14 @@ public class PhotoActivity extends AppCompatActivity implements OnPhotoClickList
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_photo);
         ButterKnife.bind(this);
+        mRecyclerView.setLayoutManager(new GridLayoutManager(this, 3));
         setSupportActionBar(mToolbar);
         getSupportActionBar().setTitle(getIntent().getStringExtra("name"));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         mProgressBar.setVisibility(View.VISIBLE);
         requestPhotos();
     }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -102,9 +101,9 @@ public class PhotoActivity extends AppCompatActivity implements OnPhotoClickList
     private void setUpRecyclerView() {
         mProgressBar.setVisibility(View.GONE);
         PhotoAdapter mAdapter = new PhotoAdapter(this, mPhotoList);
-        mRecyclerView.setLayoutManager(new GridLayoutManager(this, 3));
         mAdapter.setOnPhotoClickListener(this);
         mRecyclerView.setAdapter(mAdapter);
+        mRecyclerView.scheduleLayoutAnimation();
     }
 
     @Override

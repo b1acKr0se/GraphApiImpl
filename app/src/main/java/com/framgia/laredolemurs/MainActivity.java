@@ -12,14 +12,11 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
-    @Bind(R.id.toolbar)
-    Toolbar mToolbar;
-    @Bind(R.id.content_frame)
-    View mContentView;
-    @Bind(R.id.button_gallery)
-    View mGalleryButton;
-    @Bind(R.id.button_home)View mHomeButton;
-    @Bind(R.id.button_post)View mPostButton;
+    @Bind(R.id.toolbar) Toolbar mToolbar;
+    @Bind(R.id.button_gallery) View mGalleryButton;
+    @Bind(R.id.button_home) View mHomeButton;
+    @Bind(R.id.button_post) View mPostButton;
+    private Fragment mHomeFragment, mGalleryFragment;
 
 
     @Override
@@ -31,8 +28,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mGalleryButton.setOnClickListener(this);
         mHomeButton.setOnClickListener(this);
         mPostButton.setOnClickListener(this);
-        if (savedInstanceState == null)
+        if (savedInstanceState == null) {
+            mHomeFragment = HomeFragment.newInstance();
+            mGalleryFragment = GalleryFragment.newInstance();
             navigateToHome();
+        }
     }
 
     @Override
@@ -51,10 +51,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mHomeButton.setAlpha(1.0f);
         mPostButton.setAlpha(0.5f);
         mGalleryButton.setAlpha(0.5f);
-        Fragment fragment = HomeFragment.newInstance();
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.content_frame, fragment, "Home");
+        if (mHomeFragment.isAdded()) fragmentTransaction.show(mHomeFragment);
+        else fragmentTransaction.add(R.id.content_frame, mHomeFragment, "Home");
+        if (mGalleryFragment.isAdded()) fragmentTransaction.hide(mGalleryFragment);
         fragmentTransaction.commit();
     }
 
@@ -62,10 +63,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mGalleryButton.setAlpha(1.0f);
         mPostButton.setAlpha(0.5f);
         mHomeButton.setAlpha(0.5f);
-        Fragment fragment = GalleryFragment.newInstance();
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.content_frame, fragment, "Gallery");
+        if (mGalleryFragment.isAdded()) fragmentTransaction.show(mGalleryFragment);
+        else fragmentTransaction.add(R.id.content_frame, mGalleryFragment, "Gallery");
+        if (mHomeFragment.isAdded()) fragmentTransaction.hide(mHomeFragment);
         fragmentTransaction.commit();
     }
 }

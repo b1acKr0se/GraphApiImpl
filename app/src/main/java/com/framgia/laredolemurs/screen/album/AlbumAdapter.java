@@ -1,4 +1,4 @@
-package com.framgia.laredolemurs;
+package com.framgia.laredolemurs.screen.album;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -8,6 +8,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.framgia.laredolemurs.Album;
+import com.framgia.laredolemurs.OnAlbumClickListener;
+import com.framgia.laredolemurs.R;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;

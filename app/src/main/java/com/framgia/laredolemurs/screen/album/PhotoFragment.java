@@ -1,4 +1,4 @@
-package com.framgia.laredolemurs;
+package com.framgia.laredolemurs.screen.album;
 
 
 import android.content.Intent;
@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +15,10 @@ import com.facebook.AccessToken;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.HttpMethod;
+import com.framgia.laredolemurs.Album;
+import com.framgia.laredolemurs.OnAlbumClickListener;
+import com.framgia.laredolemurs.PhotoActivity;
+import com.framgia.laredolemurs.R;
 
 import org.json.JSONArray;
 import org.json.JSONException;

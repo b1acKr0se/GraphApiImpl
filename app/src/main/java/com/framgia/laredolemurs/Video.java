@@ -2,6 +2,7 @@ package com.framgia.laredolemurs;
 
 public class Video {
     private String id;
+    private String title = "Untitled";
     private String description;
     private String source;
     private String picture;
@@ -13,6 +14,14 @@ public class Video {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public String getDescription() {

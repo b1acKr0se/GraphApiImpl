@@ -4,6 +4,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
+import com.framgia.laredolemurs.screen.album.PhotoFragment;
+
 public class GalleryPagerAdapter extends FragmentStatePagerAdapter {
 
     public GalleryPagerAdapter(FragmentManager fm) {

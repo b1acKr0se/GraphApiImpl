@@ -18,7 +18,7 @@ public class OverlayTransformation implements Transformation {
     @Override
     public Bitmap transform(Bitmap source) {
         Bitmap workingBitmap = Bitmap.createBitmap(source);
-        Bitmap mutableBitmap = dark(workingBitmap.copy(Bitmap.Config.ARGB_8888, true));
+        Bitmap mutableBitmap = darken(workingBitmap.copy(Bitmap.Config.ARGB_8888, true));
         Canvas canvas = new Canvas(mutableBitmap);
         canvas.drawBitmap(mutableBitmap, 0, 0, null);
         source.recycle();
@@ -30,7 +30,7 @@ public class OverlayTransformation implements Transformation {
         return "DarkenTransformation";
     }
 
-    private static Bitmap dark(Bitmap bitmap) {
+    private static Bitmap darken(Bitmap bitmap) {
         Canvas canvas = new Canvas(bitmap);
         Paint p = new Paint(Color.RED);
         ColorFilter filter = new LightingColorFilter(0xFF7F7F7F, 0x00000000);

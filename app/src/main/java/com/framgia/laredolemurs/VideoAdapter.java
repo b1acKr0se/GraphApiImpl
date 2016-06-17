@@ -41,11 +41,11 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.ViewHolder> 
         holder.itemView.setOnClickListener(holder);
         holder.position = position;
         Picasso.with(mContext).load(video.getPicture()).into(holder.image);
-        if (video.getDescription() == null) {
-            holder.desc.setVisibility(View.GONE);
+        if (video.getTitle() == null) {
+            holder.title.setVisibility(View.GONE);
         } else {
-            holder.desc.setVisibility(View.VISIBLE);
-            holder.desc.setText(video.getDescription());
+            holder.title.setVisibility(View.VISIBLE);
+            holder.title.setText(video.getTitle());
         }
         holder.length.setText(video.getDuration());
     }
@@ -57,7 +57,7 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.ViewHolder> 
 
     protected class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         @Bind(R.id.photo) ImageView image;
-        @Bind(R.id.video_desc) TextView desc;
+        @Bind(R.id.video_title) TextView title;
         @Bind(R.id.video_length) TextView length;
         private int position;
 

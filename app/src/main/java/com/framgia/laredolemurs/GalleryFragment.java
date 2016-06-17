@@ -35,6 +35,7 @@ public class GalleryFragment extends Fragment {
         ButterKnife.bind(this, view);
         GalleryPagerAdapter adapter = new GalleryPagerAdapter(getFragmentManager());
         mViewPager.setAdapter(adapter);
+        mViewPager.setOffscreenPageLimit(3);
         mTabLayout.setTabTextColors(ContextCompat.getColor(getActivity(), R.color.colorPrimaryDark), ContextCompat.getColor(getActivity(), R.color.colorPrimary));
         mTabLayout.setupWithViewPager(mViewPager);
         return view;

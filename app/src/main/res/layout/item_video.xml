@@ -27,19 +27,17 @@
             android:layout_marginStart="16dp"
             android:background="@drawable/length_background"
             android:padding="4dp"
-            android:text="02:12"
             android:textColor="@android:color/white"
             android:textSize="12sp" />
     </FrameLayout>
 
     <TextView
-        android:id="@+id/video_desc"
+        android:id="@+id/video_title"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginBottom="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginStart="16dp"
-        android:text="Coming soon the Laredo Lemurs mobile app for Iphone and Android users. More features will be added to the app not shown on this video.  Powered by SR Truck and Trailer Parts!!"
         android:textColor="@android:color/black"
-        android:textSize="15sp" />
+        android:textSize="18sp" />
 </LinearLayout>
