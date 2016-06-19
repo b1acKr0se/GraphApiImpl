@@ -33,8 +33,10 @@ import butterknife.ButterKnife;
  * A simple {@link Fragment} subclass.
  */
 public class PostFragment extends Fragment implements OnPostClickListener {
-    @Bind(R.id.recycler_view) RecyclerView mRecyclerView;
-    @Bind(R.id.progress_bar) ProgressBar mProgressBar;
+    @Bind(R.id.recycler_view)
+    RecyclerView mRecyclerView;
+    @Bind(R.id.progress_bar)
+    ProgressBar mProgressBar;
     private List<Post> posts = new ArrayList<>();
 
     public PostFragment() {
@@ -123,8 +125,11 @@ public class PostFragment extends Fragment implements OnPostClickListener {
         return Post.Type.STATUS;
     }
 
-    @Override public void onPostClick(int position) {
-        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(posts.get(position).getLink()));
-        startActivity(browserIntent);
+    @Override
+    public void onPostClick(int position) {
+        if (posts.get(position).getLink() != null) {
+            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(posts.get(position).getLink()));
+            startActivity(browserIntent);
+        }
     }
 }

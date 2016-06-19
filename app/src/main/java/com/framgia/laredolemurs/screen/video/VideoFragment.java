@@ -67,7 +67,6 @@ public class VideoFragment extends Fragment implements OnVideoClickListener {
                 HttpMethod.GET,
                 new GraphRequest.Callback() {
                     public void onCompleted(GraphResponse response) {
-                        Log.i("csdvsdv", "onCompleted: " + response.getRawResponse());
                         parseResult(response);
                     }
                 }
