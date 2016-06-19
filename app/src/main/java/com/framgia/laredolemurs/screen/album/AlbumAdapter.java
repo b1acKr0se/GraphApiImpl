@@ -8,8 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.framgia.laredolemurs.Album;
-import com.framgia.laredolemurs.OnAlbumClickListener;
+import com.framgia.laredolemurs.data.model.Album;
 import com.framgia.laredolemurs.R;
 import com.squareup.picasso.Picasso;
 
@@ -18,17 +17,17 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.ViewHolder> {
+class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.ViewHolder> {
     private List<Album> albumList;
     private Context mContext;
     private OnAlbumClickListener onAlbumClickListener;
 
-    public AlbumAdapter(Context context, List<Album> album) {
+    AlbumAdapter(Context context, List<Album> album) {
         mContext = context;
         albumList = album;
     }
 
-    public void setOnAlbumClickListener(OnAlbumClickListener onAlbumClickListener) {
+    void setOnAlbumClickListener(OnAlbumClickListener onAlbumClickListener) {
         this.onAlbumClickListener = onAlbumClickListener;
     }
 
@@ -53,16 +52,13 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.ViewHolder> 
         return albumList.size();
     }
 
-    protected class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        @Bind(R.id.album_cover)
-        ImageView cover;
-        @Bind(R.id.album_name)
-        TextView name;
-        @Bind(R.id.album_count)
-        TextView count;
+    class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        @Bind(R.id.album_cover) ImageView cover;
+        @Bind(R.id.album_name) TextView name;
+        @Bind(R.id.album_count) TextView count;
         private int position;
 
-        public ViewHolder(View itemView) {
+        ViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }

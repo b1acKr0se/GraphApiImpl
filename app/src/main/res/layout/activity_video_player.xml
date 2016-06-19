@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.framgia.laredolemurs.screen.album.VideoPlayerActivity">
+    tools:context="com.framgia.laredolemurs.screen.video.VideoPlayerActivity">
 
     <com.devbrackets.android.exomedia.EMVideoView
         android:id="@+id/video_view"
