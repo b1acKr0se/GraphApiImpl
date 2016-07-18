@@ -30,7 +30,8 @@ public class FullScreenImageAdapter extends PagerAdapter {
     public Object instantiateItem(ViewGroup container, int position) {
         View layout = mLayoutInflater.inflate(R.layout.item_full_screen_image, container, false);
         TouchImageView imageView = (TouchImageView) layout.findViewById(R.id.image);
-        Picasso.with(mActivity).load(mPhotos.get(position).getSourceUrl()).into(imageView);
+        if (mPhotos.get(position) != null)
+            Picasso.with(mActivity).load(mPhotos.get(position).getSourceUrl()).into(imageView);
         layout.setTag(position);
         imageView.resetZoom();
         container.addView(layout);

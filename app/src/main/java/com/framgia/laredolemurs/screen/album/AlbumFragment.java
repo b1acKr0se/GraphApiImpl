@@ -15,8 +15,8 @@ import com.facebook.AccessToken;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.HttpMethod;
-import com.framgia.laredolemurs.data.model.Album;
 import com.framgia.laredolemurs.R;
+import com.framgia.laredolemurs.data.model.Album;
 import com.framgia.laredolemurs.screen.photo.PhotoActivity;
 
 import org.json.JSONArray;
@@ -34,7 +34,6 @@ public class AlbumFragment extends Fragment implements OnAlbumClickListener {
     private List<Album> mAlbumList = new ArrayList<>();
     @Bind(R.id.recycler_view) RecyclerView mRecyclerView;
     @Bind(R.id.progress_bar) ProgressBar mProgressBar;
-    private AlbumAdapter mAdapter;
 
     public static final String TAG = "PhotoFragment";
 
@@ -57,7 +56,7 @@ public class AlbumFragment extends Fragment implements OnAlbumClickListener {
 
     private void retrieveAlbums() {
         Bundle parameters = new Bundle();
-        parameters.putString("fields", "count,name,created_time,picture.type(album)");
+        parameters.putString("fields", "count,name,created_time,cover_photo.fields(images)");
         new GraphRequest(
                 AccessToken.getCurrentAccessToken(),
                 "/LaredoLemurs/albums",
@@ -65,8 +64,10 @@ public class AlbumFragment extends Fragment implements OnAlbumClickListener {
                 HttpMethod.GET,
                 new GraphRequest.Callback() {
                     public void onCompleted(GraphResponse response) {
-                        mAlbumList = parseResult(response);
-                        showList();
+                        if (response != null) {
+                            mAlbumList = parseResult(response);
+                            showList();
+                        }
                     }
                 }
         ).executeAsync();
@@ -76,6 +77,7 @@ public class AlbumFragment extends Fragment implements OnAlbumClickListener {
         List<Album> albumList = new ArrayList<>();
         JSONObject object = response.getJSONObject();
         try {
+            if(object == null) return albumList;
             JSONArray array = object.getJSONArray("data");
             for (int i = 0; i < array.length(); i++) {
                 JSONObject jsonObject = array.getJSONObject(i);
@@ -84,8 +86,10 @@ public class AlbumFragment extends Fragment implements OnAlbumClickListener {
                 album.setName(jsonObject.getString("name"));
                 album.setCreatedTime(jsonObject.getString("created_time"));
                 album.setCount(jsonObject.getInt("count"));
-                album.setCoverUrl(jsonObject.getJSONObject("picture").getJSONObject("data").getString("url"));
-                albumList.add(album);
+                if (jsonObject.has("cover_photo"))
+                    album.setCoverUrl(jsonObject.getJSONObject("cover_photo").getJSONArray("images").getJSONObject(0).getString("source"));
+                if (jsonObject.getInt("count") > 0)
+                    albumList.add(album);
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -95,7 +99,7 @@ public class AlbumFragment extends Fragment implements OnAlbumClickListener {
 
     private void showList() {
         mProgressBar.setVisibility(View.GONE);
-        mAdapter = new AlbumAdapter(getActivity(), mAlbumList);
+        AlbumAdapter mAdapter = new AlbumAdapter(getActivity(), mAlbumList);
         mAdapter.setOnAlbumClickListener(this);
         mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
         mRecyclerView.setAdapter(mAdapter);

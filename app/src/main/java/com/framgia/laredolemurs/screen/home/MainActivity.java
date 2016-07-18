@@ -33,12 +33,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mGalleryButton.setOnClickListener(this);
         mHomeButton.setOnClickListener(this);
         mPostButton.setOnClickListener(this);
-        if (savedInstanceState == null) {
-            mHomeFragment = HomeFragment.newInstance();
-            mGalleryFragment = GalleryFragment.newInstance();
-            mPostFragment = PostFragment.newInstace();
-            navigateToHome();
-        }
+        mHomeFragment = HomeFragment.newInstance();
+        mGalleryFragment = GalleryFragment.newInstance();
+        mPostFragment = PostFragment.newInstace();
+        navigateToHome();
     }
 
     @Override
@@ -62,10 +60,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mGalleryButton.setAlpha(0.5f);
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        if (mHomeFragment.isAdded()) fragmentTransaction.show(mHomeFragment);
+        if (mHomeFragment != null && mHomeFragment.isAdded())
+            fragmentTransaction.show(mHomeFragment);
         else fragmentTransaction.add(R.id.content_frame, mHomeFragment, "Home");
-        if (mGalleryFragment.isAdded()) fragmentTransaction.hide(mGalleryFragment);
-        if (mPostFragment.isAdded()) fragmentTransaction.hide(mPostFragment);
+        if (mGalleryFragment != null && mGalleryFragment.isAdded())
+            fragmentTransaction.hide(mGalleryFragment);
+        if (mPostFragment != null && mPostFragment.isAdded())
+            fragmentTransaction.hide(mPostFragment);
         fragmentTransaction.commit();
     }
 
@@ -75,10 +76,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mHomeButton.setAlpha(0.5f);
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        if (mGalleryFragment.isAdded()) fragmentTransaction.show(mGalleryFragment);
-        else fragmentTransaction.add(R.id.content_frame, mGalleryFragment, "Gallery");
-        if (mHomeFragment.isAdded()) fragmentTransaction.hide(mHomeFragment);
-        if (mPostFragment.isAdded()) fragmentTransaction.hide(mPostFragment);
+        if (mGalleryFragment != null && mGalleryFragment.isAdded())
+            fragmentTransaction.show(mGalleryFragment);
+        else
+            fragmentTransaction.add(R.id.content_frame, mGalleryFragment, "Gallery");
+        if (mHomeFragment != null && mHomeFragment.isAdded())
+            fragmentTransaction.hide(mHomeFragment);
+        if (mPostFragment != null && mPostFragment.isAdded())
+            fragmentTransaction.hide(mPostFragment);
         fragmentTransaction.commit();
     }
 
@@ -88,10 +93,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mHomeButton.setAlpha(0.5f);
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        if (mPostFragment.isAdded()) fragmentTransaction.show(mPostFragment);
+        if (mPostFragment != null && mPostFragment.isAdded())
+            fragmentTransaction.show(mPostFragment);
         else fragmentTransaction.add(R.id.content_frame, mPostFragment, "Post");
-        if (mHomeFragment.isAdded()) fragmentTransaction.hide(mHomeFragment);
-        if (mGalleryFragment.isAdded()) fragmentTransaction.hide(mGalleryFragment);
+        if (mHomeFragment != null && mHomeFragment.isAdded())
+            fragmentTransaction.hide(mHomeFragment);
+        if (mGalleryFragment != null && mGalleryFragment.isAdded())
+            fragmentTransaction.hide(mGalleryFragment);
         fragmentTransaction.commit();
     }
 }

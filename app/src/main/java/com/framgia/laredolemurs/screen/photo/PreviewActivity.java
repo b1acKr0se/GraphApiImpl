@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.framgia.laredolemurs.R;
 import com.framgia.laredolemurs.data.model.Photo;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
@@ -30,7 +31,7 @@ public class PreviewActivity extends AppCompatActivity implements View.OnClickLi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_preview);
         ButterKnife.bind(this);
-        mPhotos = getIntent().getParcelableArrayListExtra("list");
+        mPhotos = (ArrayList<Photo>) getIntent().getExtras().getSerializable("list");
         int position = getIntent().getIntExtra("position", -1);
         mCloseButton.setOnClickListener(this);
         fullScreenImageAdapter = new FullScreenImageAdapter(this, mPhotos);
@@ -44,6 +45,7 @@ public class PreviewActivity extends AppCompatActivity implements View.OnClickLi
             @Override
             public void onPageSelected(int position) {
                 mPositionTextView.setText((position + 1) + "/" + mPhotos.size());
+                if(mPhotos.get(position) == null) return;
                 if (mPhotos.get(position).getCaption() == null) {
                     mScrollView.setVisibility(View.GONE);
                 } else {
@@ -68,7 +70,7 @@ public class PreviewActivity extends AppCompatActivity implements View.OnClickLi
         mViewPager.setPageMargin(convertToPx(20));
     }
 
-    public int convertToPx(int dp) {
+    private int convertToPx(int dp) {
         final float scale = getResources().getDisplayMetrics().density;
         return (int) (dp * scale + 0.5f);
     }

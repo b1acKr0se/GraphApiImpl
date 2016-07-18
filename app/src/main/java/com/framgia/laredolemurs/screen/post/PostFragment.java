@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +18,7 @@ import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.framgia.laredolemurs.R;
 import com.framgia.laredolemurs.data.model.Post;
-import com.framgia.laredolemurs.widget.SimpleDividerItemDecoration;
+import com.framgia.laredolemurs.util.EndlessRecyclerOnScrollListener;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -32,12 +33,15 @@ import butterknife.ButterKnife;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class PostFragment extends Fragment implements OnPostClickListener {
+public class PostFragment extends Fragment implements OnPostClickListener, GraphRequest.Callback {
     @Bind(R.id.recycler_view)
     RecyclerView mRecyclerView;
-    @Bind(R.id.progress_bar)
-    ProgressBar mProgressBar;
+    @Bind(R.id.progress_bar) ProgressBar mProgressBar;
     private List<Post> posts = new ArrayList<>();
+    private PostAdapter adapter;
+    private EndlessRecyclerOnScrollListener scrollListener;
+    private GraphRequest graphRequest;
+
 
     public PostFragment() {
         // Required empty public constructor
@@ -53,6 +57,23 @@ public class PostFragment extends Fragment implements OnPostClickListener {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_post, container, false);
         ButterKnife.bind(this, view);
+        adapter = new PostAdapter(getActivity(), posts);
+        adapter.setOnPostClickListener(this);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
+        mRecyclerView.setLayoutManager(layoutManager);
+        scrollListener = new EndlessRecyclerOnScrollListener(layoutManager) {
+            @Override
+            public void onLoadMore() {
+                if (graphRequest != null) {
+                    posts.add(null);
+                    adapter.notifyItemInserted(posts.size() - 1);
+                    graphRequest.setCallback(PostFragment.this);
+                    graphRequest.executeAsync();
+                }
+            }
+        };
+        mRecyclerView.addOnScrollListener(scrollListener);
+        mRecyclerView.setAdapter(adapter);
         retrievePost();
         return view;
     }
@@ -60,31 +81,28 @@ public class PostFragment extends Fragment implements OnPostClickListener {
     private void retrievePost() {
         GraphRequest request = GraphRequest.newGraphPathRequest(
                 AccessToken.getCurrentAccessToken(),
-                "/laredolemurs/feed",
-                new GraphRequest.Callback() {
-                    @Override
-                    public void onCompleted(GraphResponse response) {
-                        posts = parseResult(response);
-                        showList();
-                    }
-                });
+                "/laredolemurs/feed", this);
         Bundle parameters = new Bundle();
         parameters.putString("fields", "message,story,created_time,type,full_picture,source,link");
         request.setParameters(parameters);
         request.executeAsync();
     }
 
-    private void showList() {
+    private void showList(List<Post> postList) {
         mProgressBar.setVisibility(View.GONE);
-        PostAdapter adapter = new PostAdapter(getActivity(), posts);
-        adapter.setOnPostClickListener(this);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mRecyclerView.setAdapter(adapter);
+        if (posts.size() > 0) posts.remove(posts.size() - 1);
+        scrollListener.setLoaded();
+        if (postList == null)
+            return;
+        posts.addAll(postList);
+        adapter.notifyDataSetChanged();
     }
 
     private List<Post> parseResult(GraphResponse response) {
+        graphRequest = response.getRequestForPagedResults(GraphResponse.PagingDirection.NEXT);
         List<Post> list = new ArrayList<>();
         JSONObject object = response.getJSONObject();
+        if (object == null) return null;
         try {
             JSONArray array = object.getJSONArray("data");
             for (int i = 0; i < array.length(); i++) {
@@ -130,6 +148,13 @@ public class PostFragment extends Fragment implements OnPostClickListener {
         if (posts.get(position).getLink() != null) {
             Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(posts.get(position).getLink()));
             startActivity(browserIntent);
+        }
+    }
+
+    @Override
+    public void onCompleted(GraphResponse response) {
+        if (response != null) {
+            showList(parseResult(response));
         }
     }
 }

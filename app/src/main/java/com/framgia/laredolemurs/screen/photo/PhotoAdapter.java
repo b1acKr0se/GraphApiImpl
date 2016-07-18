@@ -9,6 +9,7 @@ import android.widget.ImageView;
 
 import com.framgia.laredolemurs.R;
 import com.framgia.laredolemurs.data.model.Photo;
+import com.framgia.laredolemurs.screen.post.ProgressViewHolder;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -16,14 +17,21 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder> {
+public class PhotoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private List<Photo> albumList;
     private Context mContext;
     private OnPhotoClickListener onPhotoClickListener;
+    private static final int TYPE_PROGRESS = 0;
+    private static final int TYPE_PHOTO = 1;
 
     public PhotoAdapter(Context context, List<Photo> album) {
         mContext = context;
         albumList = album;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return albumList.get(position) == null ? TYPE_PROGRESS : TYPE_PHOTO;
     }
 
     public void setOnPhotoClickListener(OnPhotoClickListener onPhotoClickListener) {
@@ -31,17 +39,24 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder> 
     }
 
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(mContext).inflate(R.layout.item_photo, parent, false);
-        return new ViewHolder(view);
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        if (viewType == TYPE_PHOTO) {
+            View view = LayoutInflater.from(mContext).inflate(R.layout.item_photo, parent, false);
+            return new ViewHolder(view);
+        }
+        View view = LayoutInflater.from(mContext).inflate(R.layout.item_progress, parent, false);
+        return new ProgressViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
-        Photo photo = albumList.get(position);
-        holder.itemView.setOnClickListener(holder);
-        holder.position = position;
-        Picasso.with(mContext).load(photo.getSmallUrl()).placeholder(R.drawable.placeholder).into(holder.image);
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+        if (holder instanceof ViewHolder) {
+            ViewHolder viewHolder = (ViewHolder) holder;
+            Photo photo = albumList.get(position);
+            viewHolder.itemView.setOnClickListener(viewHolder);
+            viewHolder.position = position;
+            Picasso.with(mContext).load(photo.getSmallUrl()).placeholder(R.drawable.placeholder).into(viewHolder.image);
+        }
     }
 
     @Override

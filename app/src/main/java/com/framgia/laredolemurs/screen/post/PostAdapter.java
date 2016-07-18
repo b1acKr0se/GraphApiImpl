@@ -19,6 +19,7 @@ class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public static final int TYPE_EVENT = 4;
     public static final int TYPE_LINK = 5;
     public static final int TYPE_OFFER = 6;
+    public static final int TYPE_PROGRESS = 0;
     private List<Post> mList;
     private Context mContext;
     private OnPostClickListener onPostClickListener;
@@ -32,7 +33,10 @@ class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         this.onPostClickListener = onPostClickListener;
     }
 
-    @Override public int getItemViewType(int position) {
+    @Override
+    public int getItemViewType(int position) {
+        Post post = mList.get(position);
+        if (post == null) return TYPE_PROGRESS;
         switch (mList.get(position).getType()) {
             case PHOTO:
                 return TYPE_PHOTO;
@@ -50,7 +54,8 @@ class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         return -1;
     }
 
-    @Override public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    @Override
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view;
         switch (viewType) {
             case TYPE_PHOTO:
@@ -71,46 +76,53 @@ class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             case TYPE_EVENT:
                 view = LayoutInflater.from(mContext).inflate(R.layout.item_post_photo, parent, false);
                 return new PhotoViewHolder(view);
+            case TYPE_PROGRESS:
+                view = LayoutInflater.from(mContext).inflate(R.layout.item_progress, parent, false);
+                return new ProgressViewHolder(view);
         }
         view = LayoutInflater.from(mContext).inflate(R.layout.item_post_status, parent, false);
         return new StatusViewHolder(view);
     }
 
-    @Override public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        BaseViewHolder viewHolder = (BaseViewHolder) holder;
-        viewHolder.setPosition(position);
-        viewHolder.itemView.setOnClickListener(viewHolder);
-        viewHolder.setOnPostClickListener(onPostClickListener);
-        Post post = mList.get(position);
-        switch (getItemViewType(position)) {
-            case TYPE_PHOTO:
-                PhotoViewHolder photoViewHolder = (PhotoViewHolder) viewHolder;
-                photoViewHolder.setDetails(post);
-                break;
-            case TYPE_VIDEO:
-                VideoViewHolder videoViewHolder = (VideoViewHolder) viewHolder;
-                videoViewHolder.setDetails(post);
-                break;
-            case TYPE_STATUS:
-                StatusViewHolder statusViewHolder = (StatusViewHolder) viewHolder;
-                statusViewHolder.setDetails(post);
-                break;
-            case TYPE_LINK:
-                StatusViewHolder linkViewHolder = (StatusViewHolder) viewHolder;
-                linkViewHolder.setDetails(post);
-                break;
-            case TYPE_OFFER:
-                StatusViewHolder offerViewHolder = (StatusViewHolder) viewHolder;
-                offerViewHolder.setDetails(post);
-                break;
-            case TYPE_EVENT:
-                PhotoViewHolder eventViewHolder = (PhotoViewHolder) viewHolder;
-                eventViewHolder.setDetails(post);
-                break;
+    @Override
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+        if (holder instanceof BaseViewHolder) {
+            BaseViewHolder viewHolder = (BaseViewHolder) holder;
+            viewHolder.setPosition(position);
+            viewHolder.itemView.setOnClickListener(viewHolder);
+            viewHolder.setOnPostClickListener(onPostClickListener);
+            Post post = mList.get(position);
+            switch (getItemViewType(position)) {
+                case TYPE_PHOTO:
+                    PhotoViewHolder photoViewHolder = (PhotoViewHolder) viewHolder;
+                    photoViewHolder.setDetails(post);
+                    break;
+                case TYPE_VIDEO:
+                    VideoViewHolder videoViewHolder = (VideoViewHolder) viewHolder;
+                    videoViewHolder.setDetails(post);
+                    break;
+                case TYPE_STATUS:
+                    StatusViewHolder statusViewHolder = (StatusViewHolder) viewHolder;
+                    statusViewHolder.setDetails(post);
+                    break;
+                case TYPE_LINK:
+                    StatusViewHolder linkViewHolder = (StatusViewHolder) viewHolder;
+                    linkViewHolder.setDetails(post);
+                    break;
+                case TYPE_OFFER:
+                    StatusViewHolder offerViewHolder = (StatusViewHolder) viewHolder;
+                    offerViewHolder.setDetails(post);
+                    break;
+                case TYPE_EVENT:
+                    PhotoViewHolder eventViewHolder = (PhotoViewHolder) viewHolder;
+                    eventViewHolder.setDetails(post);
+                    break;
+            }
         }
     }
 
-    @Override public int getItemCount() {
+    @Override
+    public int getItemCount() {
         return mList.size();
     }
 
